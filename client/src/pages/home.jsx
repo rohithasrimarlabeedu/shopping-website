@@ -12,7 +12,7 @@ function Home() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/products");
+    const response = await axios.get("https://shopping-website-2ytp.onrender.com/api/products");
 
       console.log("Products API:", response.data);
 

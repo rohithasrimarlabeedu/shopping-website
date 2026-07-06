@@ -11,7 +11,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post("http://localhost:5000/api/auth/register", {
+      await axios.post("https://shopping-website-2ytp.onrender.com/api/auth/register", ...), {
         name,
         email,
         password,

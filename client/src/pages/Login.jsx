@@ -9,7 +9,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post("http://localhost:5000/api/auth/login", {
+      await axios.post("https://shopping-website-2ytp.onrender.com/api/auth/login", ...), {
         email,
         password,
       });
