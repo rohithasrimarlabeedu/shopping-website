@@ -65,21 +65,36 @@ function ManageProducts() {
 
           <p>Stock : {product.stock}</p>
 
-         <button
-  onClick={() =>
-    window.location.href = `/admin/edit-product/${product._id}`
-  }
-  style={{
-    background: "orange",
-    color: "white",
-    border: "none",
-    padding: "10px 20px",
-    marginRight: "10px",
-    cursor: "pointer",
-  }}
->
-  Edit
-</button>
+       <div style={{ marginTop: "15px" }}>
+  <button
+    onClick={() =>
+      window.location.href = `/admin/edit-product/${product._id}`
+    }
+    style={{
+      background: "orange",
+      color: "white",
+      border: "none",
+      padding: "10px 20px",
+      marginRight: "10px",
+      cursor: "pointer",
+    }}
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() => deleteProduct(product._id)}
+    style={{
+      background: "red",
+      color: "white",
+      border: "none",
+      padding: "10px 20px",
+      cursor: "pointer",
+    }}
+  >
+    Delete
+  </button>
+</div>
         </div>
       ))}
     </div>
