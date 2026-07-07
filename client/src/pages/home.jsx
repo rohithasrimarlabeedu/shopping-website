@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Home.css";
 
+const API = "https://shopping-website-2ytp.onrender.com/api";
+
 function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +14,7 @@ function Home() {
 
   const fetchProducts = async () => {
     try {
-    const response = await axios.get("https://shopping-website-2ytp.onrender.com/api/products");
+      const response = await axios.get(`${API}/products`);
 
       console.log("Products API:", response.data);
 
@@ -39,7 +41,7 @@ function Home() {
       }
 
       await axios.post(
-        "http://localhost:5000/api/cart/add",
+        `${API}/cart/add`,
         {
           productId,
           quantity: 1,
@@ -54,7 +56,7 @@ function Home() {
       alert("Product added to cart");
     } catch (error) {
       console.log(error.response?.data || error.message);
-      alert("Failed to add product to cart");
+      alert(error.response?.data?.message || "Failed to add product to cart");
     }
   };
 
