@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import EditProduct from "./pages/EditProduct";
+
 function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ function EditProduct() {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/api/products/${id}`
+        `https://shopping-website-2ytp.onrender.com/api/products/${id}`
       );
 
       setProduct(data.product);
@@ -43,7 +43,7 @@ function EditProduct() {
       const token = localStorage.getItem("token");
 
       const { data } = await axios.put(
-        `http://localhost:5000/api/products/${id}`,
+        `https://shopping-website-2ytp.onrender.com/api/products/${id}`,
         product,
         {
           headers: {
@@ -81,6 +81,7 @@ function EditProduct() {
       />
 
       <input
+        type="number"
         name="price"
         value={product.price}
         onChange={handleChange}
@@ -97,6 +98,7 @@ function EditProduct() {
       />
 
       <input
+        type="number"
         name="stock"
         value={product.stock}
         onChange={handleChange}
