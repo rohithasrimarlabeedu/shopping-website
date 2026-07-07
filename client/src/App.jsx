@@ -75,6 +75,7 @@ function App() {
   path="/admin/orders"
   element={<ManageOrders />}
 />
+<Route path="/admin/edit-product/:id" element={<EditProduct />} />
         </Routes>
       </div>
     </BrowserRouter>
