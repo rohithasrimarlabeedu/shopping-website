@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
+const API = "https://shopping-website-2ytp.onrender.com/api";
 
 function ManageProducts() {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -10,11 +14,8 @@ function ManageProducts() {
 
   const fetchProducts = async () => {
     try {
-      const { data } = await axios.get(
-        "http://localhost:5000/api/products"
-      );
-
-      setProducts(data.products);
+      const { data } = await axios.get(`${API}/products`);
+      setProducts(data.products || []);
     } catch (error) {
       console.log(error.response?.data || error.message);
     }
@@ -26,14 +27,11 @@ function ManageProducts() {
 
       if (!window.confirm("Delete this product?")) return;
 
-      const { data } = await axios.delete(
-        `http://localhost:5000/api/products/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { data } = await axios.delete(`${API}/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       alert(data.message);
       fetchProducts();
@@ -47,56 +45,62 @@ function ManageProducts() {
     <div style={{ padding: "30px" }}>
       <h1>📦 Manage Products</h1>
 
-      {products.map((product) => (
-        <div
-          key={product._id}
-          style={{
-            border: "1px solid #ddd",
-            padding: "20px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <h2>{product.name}</h2>
+      {products.length === 0 ? (
+        <h3>No products found.</h3>
+      ) : (
+        products.map((product) => (
+          <div
+            key={product._id}
+            style={{
+              border: "1px solid #ddd",
+              padding: "20px",
+              marginBottom: "20px",
+              borderRadius: "10px",
+            }}
+          >
+            <h2>{product.name}</h2>
 
-          <p>{product.description}</p>
+            <p>{product.description}</p>
 
-          <h3>₹ {product.price}</h3>
+            <h3>₹ {product.price}</h3>
 
-          <p>Stock : {product.stock}</p>
+            <p>Category: {product.category}</p>
 
-       <div style={{ marginTop: "15px" }}>
-  <button
-    onClick={() =>
-      window.location.href = `/admin/edit-product/${product._id}`
-    }
-    style={{
-      background: "orange",
-      color: "white",
-      border: "none",
-      padding: "10px 20px",
-      marginRight: "10px",
-      cursor: "pointer",
-    }}
-  >
-    Edit
-  </button>
+            <p>Stock: {product.stock}</p>
 
-  <button
-    onClick={() => deleteProduct(product._id)}
-    style={{
-      background: "red",
-      color: "white",
-      border: "none",
-      padding: "10px 20px",
-      cursor: "pointer",
-    }}
-  >
-    Delete
-  </button>
-</div>
-        </div>
-      ))}
+            <div style={{ marginTop: "15px" }}>
+              <button
+                onClick={() =>
+                  navigate(`/admin/edit-product/${product._id}`)
+                }
+                style={{
+                  background: "orange",
+                  color: "white",
+                  border: "none",
+                  padding: "10px 20px",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                }}
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => deleteProduct(product._id)}
+                style={{
+                  background: "red",
+                  color: "white",
+                  border: "none",
+                  padding: "10px 20px",
+                  cursor: "pointer",
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 }
