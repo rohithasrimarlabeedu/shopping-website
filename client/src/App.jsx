@@ -61,21 +61,21 @@ function App() {
             path="/admin/add-product"
             element={<AddProduct />}
           />
+
           <Route
-  path="/admin/products"
-  element={<ManageProducts />}
-/>
-<Route path="/admin/products" ... />
-<Route path="/admin/edit-product/:id" ... />
-<Route
-  path="/admin/edit-product/:id"
-  element={<EditProduct />}
-/>
-<Route
-  path="/admin/orders"
-  element={<ManageOrders />}
-/>
-<Route path="/admin/edit-product/:id" element={<EditProduct />} />
+            path="/admin/products"
+            element={<ManageProducts />}
+          />
+
+          <Route
+            path="/admin/edit-product/:id"
+            element={<EditProduct />}
+          />
+
+          <Route
+            path="/admin/orders"
+            element={<ManageOrders />}
+          />
         </Routes>
       </div>
     </BrowserRouter>
