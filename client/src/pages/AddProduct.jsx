@@ -50,13 +50,14 @@ function AddProduct() {
         image: "",
       });
     } catch (error) {
-      console.log(error.response?.data || error.message);
+  console.log(error);
 
-      alert(
-        error.response?.data?.message ||
-        "Failed to add product"
-      );
-    }
+  if (error.response) {
+    alert(error.response.data.message);
+  } else {
+    alert(error.message);
+  }
+}
   };
 
   return (

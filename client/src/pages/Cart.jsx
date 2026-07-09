@@ -21,8 +21,14 @@ function Cart() {
 
       setCart(data.cart);
     } catch (error) {
-      console.log(error.response?.data || error.message);
-    }
+  console.log(error);
+
+  if (error.response) {
+    alert(error.response.data.message);
+  } else {
+    alert(error.message);
+  }
+}
   };
 
   useEffect(() => {
