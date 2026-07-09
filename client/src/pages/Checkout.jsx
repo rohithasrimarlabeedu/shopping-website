@@ -35,7 +35,7 @@ function Checkout() {
       alert("FORM DATA:\n" + JSON.stringify(form, null, 2));
 
       const response = await axios.post(
-        "http://localhost:5000/api/orders/place",
+        "https://shopping-website-2ytp.onrender.com/api/orders/place"
         form,
         {
           headers: {
