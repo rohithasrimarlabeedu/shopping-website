@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+const API = "https://shopping-website-2ytp.onrender.com/api";
+
 function AddProduct() {
   const [product, setProduct] = useState({
     name: "",
@@ -22,8 +24,13 @@ function AddProduct() {
     try {
       const token = localStorage.getItem("token");
 
+      if (!token) {
+        alert("Please login as admin first");
+        return;
+      }
+
       const { data } = await axios.post(
-        "http://localhost:5000/api/products",
+        `${API}/products`,
         product,
         {
           headers: {
@@ -47,7 +54,7 @@ function AddProduct() {
 
       alert(
         error.response?.data?.message ||
-          "Failed to add product"
+        "Failed to add product"
       );
     }
   };
