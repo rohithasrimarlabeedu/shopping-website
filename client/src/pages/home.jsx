@@ -45,8 +45,67 @@ const [sort, setSort] = useState("default");
   };
 
   const filterCategory = (category) => {
-    setSelectedCategory(category);
-    const addToCart = async (productId) => {
+  setSelectedCategory(category);
+
+  let filtered = [...products];
+
+  if (category !== "All") {
+    filtered = filtered.filter(
+      (item) =>
+        item.category &&
+        item.category.toLowerCase() === category.toLowerCase()
+    );
+  }
+
+  if (search !== "") {
+    filtered = filtered.filter(
+      (item) =>
+        item.name.toLowerCase().includes(search.toLowerCase()) ||
+        item.category.toLowerCase().includes(search.toLowerCase())
+    );
+  }
+
+  setFilteredProducts(filtered);
+};
+const searchProducts = (value) => {
+  setSearch(value);
+
+  let filtered = [...products];
+
+  if (selectedCategory !== "All") {
+    filtered = filtered.filter(
+      (item) =>
+        item.category &&
+        item.category.toLowerCase() ===
+          selectedCategory.toLowerCase()
+    );
+  }
+
+  filtered = filtered.filter(
+    (item) =>
+      item.name.toLowerCase().includes(value.toLowerCase()) ||
+      item.category.toLowerCase().includes(value.toLowerCase())
+  );
+
+  setFilteredProducts(filtered);
+};
+
+const sortProducts = (type) => {
+  setSort(type);
+
+  const sorted = [...filteredProducts];
+
+  if (type === "low") {
+    sorted.sort((a, b) => a.price - b.price);
+  } else if (type === "high") {
+    sorted.sort((a, b) => b.price - a.price);
+  } else if (type === "az") {
+    sorted.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  setFilteredProducts(sorted);
+};
+
       const searchProducts = (value) => {
   setSearch(value);
 
