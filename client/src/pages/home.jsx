@@ -319,6 +319,6 @@ const sortProducts = (type) => {
       )}
     </div>
   );
-}
+
 
 export default Home;
