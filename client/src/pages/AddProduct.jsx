@@ -24,22 +24,26 @@ function AddProduct() {
     try {
       const token = localStorage.getItem("token");
 
+      console.log("TOKEN:", token);
+      console.log("PRODUCT:", product);
+
       if (!token) {
-        alert("Please login as admin first");
+        alert("Please login first");
         return;
       }
 
-      const { data } = await axios.post(
+      const response = await axios.post(
         `${API}/products`,
         product,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         }
       );
 
-      alert(data.message);
+      alert(response.data.message);
 
       setProduct({
         name: "",
@@ -50,14 +54,22 @@ function AddProduct() {
         image: "",
       });
     } catch (error) {
-  console.log(error);
+      console.log("========== ERROR ==========");
+      console.log(error);
 
-  if (error.response) {
-    alert(error.response.data.message);
-  } else {
-    alert(error.message);
-  }
-}
+      if (error.response) {
+        console.log("Status:", error.response.status);
+        console.log("Response:", error.response.data);
+
+        alert(
+          `Status: ${error.response.status}\nMessage: ${
+            error.response.data.message
+          }`
+        );
+      } else {
+        alert(error.message);
+      }
+    }
   };
 
   return (
