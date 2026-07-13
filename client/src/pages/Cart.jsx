@@ -11,7 +11,7 @@ function Cart() {
       const token = localStorage.getItem("token");
 
       const { data } = await axios.get(
-        "https://shopping-website-2ytp.onrender.com/api/cart"
+        "https://shopping-website-2ytp.onrender.com/api/cart",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ function Cart() {
       const token = localStorage.getItem("token");
 
       await axios.put(
-        "https://shopping-website-2ytp.onrender.com/api/cart/update"
+        "https://shopping-website-2ytp.onrender.com/api/cart/update",
         {
           productId,
           quantity,
@@ -65,7 +65,7 @@ function Cart() {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `https://shopping-website-2ytp.onrender.com/api/cart/remove/${productId}`
+        `https://shopping-website-2ytp.onrender.com/api/cart/remove/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

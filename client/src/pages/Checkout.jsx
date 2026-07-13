@@ -30,12 +30,8 @@ function Checkout() {
         return;
       }
 
-      // Debug - show form data
-      console.log("FORM DATA:", form);
-      alert("FORM DATA:\n" + JSON.stringify(form, null, 2));
-
       const response = await axios.post(
-        "https://shopping-website-2ytp.onrender.com/api/orders/place"
+        "https://shopping-website-2ytp.onrender.com/api/orders/place",
         form,
         {
           headers: {
@@ -44,20 +40,15 @@ function Checkout() {
         }
       );
 
-      console.log("SERVER RESPONSE:", response.data);
-
       alert(response.data.message);
-
       navigate("/orders");
     } catch (error) {
-      console.log("ERROR:", error.response?.data || error.message);
+      console.log(error.response?.data || error.message);
 
       alert(
-        JSON.stringify(
-          error.response?.data || error.message,
-          null,
-          2
-        )
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to place order"
       );
     }
   };
