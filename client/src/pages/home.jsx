@@ -88,63 +88,7 @@ const searchProducts = (value) => {
   );
 
   setFilteredProducts(filtered);
-};
 
-const sortProducts = (type) => {
-  setSort(type);
-
-  const sorted = [...filteredProducts];
-
-  if (type === "low") {
-    sorted.sort((a, b) => a.price - b.price);
-  } else if (type === "high") {
-    sorted.sort((a, b) => b.price - a.price);
-  } else if (type === "az") {
-    sorted.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  setFilteredProducts(sorted);
-};
-
-      
-  };
-
-  
-
-const sortProducts = (type) => {
-  setSort(type);
-
-  const sorted = [...filteredProducts];
-
-  if (type === "low") {
-    sorted.sort((a, b) => a.price - b.price);
-  }
-
-  if (type === "high") {
-    sorted.sort((a, b) => b.price - a.price);
-  }
-
-  if (type === "az") {
-    sorted.sort((a, b) =>
-      a.name.localeCompare(b.name)
-    );
-  }
-
-  setFilteredProducts(sorted);
-};
-
-    if (category === "All") {
-      setFilteredProducts(products);
-    } else {
-      setFilteredProducts(
-        products.filter(
-          (item) =>
-            item.category &&
-            item.category.toLowerCase() === category.toLowerCase()
-        )
-      );
-    }
-  ;
 
   const addToCart = async (productId) => {
     try {
