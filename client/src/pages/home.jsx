@@ -106,27 +106,10 @@ const sortProducts = (type) => {
   setFilteredProducts(sorted);
 };
 
-      const searchProducts = (value) => {
-  setSearch(value);
+      
+  };
 
-  let filtered = products.filter((item) => {
-    return (
-      item.name.toLowerCase().includes(value.toLowerCase()) ||
-      item.category.toLowerCase().includes(value.toLowerCase())
-    );
-  });
-
-  if (selectedCategory !== "All") {
-    filtered = filtered.filter(
-      (item) =>
-        item.category &&
-        item.category.toLowerCase() ===
-          selectedCategory.toLowerCase()
-    );
-  }
-
-  setFilteredProducts(filtered);
-};
+  
 
 const sortProducts = (type) => {
   setSort(type);
@@ -317,7 +300,7 @@ const sortProducts = (type) => {
           ))}
         </div>
       )}
-    </div>
+       </div>
   );
 
 
