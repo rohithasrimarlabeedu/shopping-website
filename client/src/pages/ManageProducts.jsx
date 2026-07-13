@@ -1,69 +1,56 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const API = "https://shopping-website-2ytp.onrender.com/api";
 
-function ManageOrders() {
-  const [orders, setOrders] = useState([]);
+function ManageProducts() {
+  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchOrders();
+    fetchProducts();
   }, []);
 
-  const fetchOrders = async () => {
+  const fetchProducts = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      const { data } = await axios.get(
-        `${API}/orders`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setOrders(data.orders);
+      const { data } = await axios.get(`${API}/products`);
+      setProducts(data.products || []);
     } catch (error) {
       console.log(error.response?.data || error.message);
-      alert(error.response?.data?.message || "Failed to load orders");
     }
   };
 
-  const updateStatus = async (id, status) => {
+  const deleteProduct = async (id) => {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.put(
-        `${API}/orders/${id}`,
-        {
-          orderStatus: status,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      if (!window.confirm("Delete this product?")) return;
 
-      alert("Order Updated Successfully");
-      fetchOrders();
+      const { data } = await axios.delete(`${API}/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert(data.message);
+      fetchProducts();
     } catch (error) {
       console.log(error.response?.data || error.message);
-      alert(error.response?.data?.message || "Failed to update order");
+      alert(error.response?.data?.message || "Delete failed");
     }
   };
 
   return (
     <div style={{ padding: "30px" }}>
-      <h1>📦 Manage Orders</h1>
+      <h1>📦 Manage Products</h1>
 
-      {orders.length === 0 ? (
-        <h2>No Orders Found</h2>
+      {products.length === 0 ? (
+        <h3>No products found.</h3>
       ) : (
-        orders.map((order) => (
+        products.map((product) => (
           <div
-            key={order._id}
+            key={product._id}
             style={{
               border: "1px solid #ddd",
               padding: "20px",
@@ -71,38 +58,46 @@ function ManageOrders() {
               borderRadius: "10px",
             }}
           >
-            <h3>Customer</h3>
-            <p>{order.user?.name}</p>
+            <h2>{product.name}</h2>
 
-            <h3>Email</h3>
-            <p>{order.user?.email}</p>
+            <p>{product.description}</p>
 
-            <h3>Total Price</h3>
-            <p>₹ {order.totalPrice}</p>
+            <h3>₹ {product.price}</h3>
 
-            <h3>Products</h3>
+            <p>Category: {product.category}</p>
 
-            {order.products
-              ?.filter((item) => item.product)
-              .map((item) => (
-                <p key={item._id}>
-                  {item.product.name} × {item.quantity}
-                </p>
-              ))}
+            <p>Stock: {product.stock}</p>
 
-            <br />
+            <div style={{ marginTop: "15px" }}>
+              <button
+                onClick={() =>
+                  navigate(`/admin/edit-product/${product._id}`)
+                }
+                style={{
+                  background: "orange",
+                  color: "white",
+                  border: "none",
+                  padding: "10px 20px",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                }}
+              >
+                Edit
+              </button>
 
-            <select
-              value={order.orderStatus}
-              onChange={(e) =>
-                updateStatus(order._id, e.target.value)
-              }
-            >
-              <option value="Pending">Pending</option>
-              <option value="Processing">Processing</option>
-              <option value="Shipped">Shipped</option>
-              <option value="Delivered">Delivered</option>
-            </select>
+              <button
+                onClick={() => deleteProduct(product._id)}
+                style={{
+                  background: "red",
+                  color: "white",
+                  border: "none",
+                  padding: "10px 20px",
+                  cursor: "pointer",
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))
       )}
@@ -110,4 +105,4 @@ function ManageOrders() {
   );
 }
 
-export default ManageOrders;
+export default ManageProducts;
