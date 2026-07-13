@@ -6,9 +6,9 @@ const placeOrder = async (req, res) => {
   try {
     const { fullName, phone, address, city, state, pincode } = req.body;
 
-    const cart = await Cart.findOne({ user: req.user._id }).populate(
-      "products.product"
-    );
+    const cart = await Cart.findOne({
+      user: req.user._id,
+    }).populate("products.product");
 
     if (!cart || cart.products.length === 0) {
       return res.status(400).json({
@@ -17,10 +17,20 @@ const placeOrder = async (req, res) => {
       });
     }
 
+    // Remove products that no longer exist
+    cart.products = cart.products.filter((item) => item.product);
+
+    if (cart.products.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Cart contains invalid products. Please add products again.",
+      });
+    }
+
     let totalPrice = 0;
 
     cart.products.forEach((item) => {
-      totalPrice += item.product.price * item.quantity;
+      totalPrice += Number(item.product.price) * item.quantity;
     });
 
     const order = await Order.create({
@@ -37,6 +47,7 @@ const placeOrder = async (req, res) => {
       totalPrice,
     });
 
+    // Empty cart after placing order
     cart.products = [];
     await cart.save();
 
@@ -46,6 +57,8 @@ const placeOrder = async (req, res) => {
       order,
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       success: false,
       message: error.message,
@@ -56,11 +69,13 @@ const placeOrder = async (req, res) => {
 // USER ORDERS
 const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id })
+    const orders = await Order.find({
+      user: req.user._id,
+    })
       .populate("products.product")
       .sort({ createdAt: -1 });
 
-    res.json({
+    res.status(200).json({
       success: true,
       orders,
     });
@@ -87,7 +102,7 @@ const getAllOrders = async (req, res) => {
       .populate("products.product")
       .sort({ createdAt: -1 });
 
-    res.json({
+    res.status(200).json({
       success: true,
       orders,
     });
@@ -122,9 +137,10 @@ const updateOrderStatus = async (req, res) => {
 
     await order.save();
 
-    res.json({
+    res.status(200).json({
       success: true,
-      message: "Order updated",
+      message: "Order updated successfully",
+      order,
     });
   } catch (error) {
     res.status(500).json({
