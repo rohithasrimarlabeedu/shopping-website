@@ -144,7 +144,7 @@ const sortProducts = (type) => {
         )
       );
     }
-  };
+  ;
 
   const addToCart = async (productId) => {
     try {
