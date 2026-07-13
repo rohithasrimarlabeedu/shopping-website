@@ -91,100 +91,128 @@ function Home() {
 
     setFilteredProducts(filtered);
   };
-  import { useEffect, useState } from "react";
-import axios from "axios";
-import "./Home.css";
 
-const API = "https://shopping-website-2ytp.onrender.com/api";
+  const sortProducts = (type) => {
+    setSort(type);
 
-function Home() {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const sorted = [...filteredProducts];
 
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("default");
+    if (type === "low") {
+      sorted.sort((a, b) => a.price - b.price);
+    } else if (type === "high") {
+      sorted.sort((a, b) => b.price - a.price);
+    } else if (type === "az") {
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    }
 
-  const categories = [
-    "All",
-    "Electronics",
-    "Fashion",
-    "Grocery",
-    "Books",
-    "Home",
-    "Beauty",
-    "Sports",
-    "Toys",
-  ];
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
+    setFilteredProducts(sorted);
+  };
+    const addToCart = async (productId) => {
     try {
-      const { data } = await axios.get(`${API}/products`);
+      const token = localStorage.getItem("token");
 
-      if (data.success) {
-        setProducts(data.products);
-        setFilteredProducts(data.products);
+      if (!token) {
+        alert("Please login first");
+        return;
       }
+
+      await axios.post(
+        `${API}/cart/add`,
+        {
+          productId,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Product added to cart");
     } catch (error) {
-      console.log(error);
-      alert("Failed to fetch products");
-    } finally {
-      setLoading(false);
+      alert(error.response?.data?.message || "Failed to add product");
     }
   };
 
-  const filterCategory = (category) => {
-    setSelectedCategory(category);
+  if (loading) {
+    return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+  }
 
-    let filtered = [...products];
+  return (
+    <div className="home">
+      <h1>🛍 Shopping Store</h1>
 
-    if (category !== "All") {
-      filtered = filtered.filter(
-        (item) =>
-          item.category &&
-          item.category.toLowerCase() === category.toLowerCase()
-      );
-    }
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "20px",
+          marginBottom: "20px",
+          flexWrap: "wrap",
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={search}
+          onChange={(e) => searchProducts(e.target.value)}
+          style={{
+            padding: "12px",
+            width: "320px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+          }}
+        />
 
-    if (search !== "") {
-      filtered = filtered.filter(
-        (item) =>
-          item.name.toLowerCase().includes(search.toLowerCase()) ||
-          item.category.toLowerCase().includes(search.toLowerCase())
-      );
-    }
+        <select
+          value={sort}
+          onChange={(e) => sortProducts(e.target.value)}
+          style={{
+            padding: "12px",
+            borderRadius: "8px",
+          }}
+        >
+          <option value="default">Sort</option>
+          <option value="low">Price Low → High</option>
+          <option value="high">Price High → Low</option>
+          <option value="az">Name A → Z</option>
+        </select>
+      </div>
 
-    setFilteredProducts(filtered);
-  };
-
-  const searchProducts = (value) => {
-    setSearch(value);
-
-    let filtered = [...products];
-
-    if (selectedCategory !== "All") {
-      filtered = filtered.filter(
-        (item) =>
-          item.category &&
-          item.category.toLowerCase() ===
-            selectedCategory.toLowerCase()
-      );
-    }
-
-    filtered = filtered.filter(
-      (item) =>
-        item.name.toLowerCase().includes(value.toLowerCase()) ||
-        item.category.toLowerCase().includes(value.toLowerCase())
-    );
-
-    setFilteredProducts(filtered);
-  };
-        {filteredProducts.length === 0 ? (
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "10px",
+          justifyContent: "center",
+          marginBottom: "30px",
+        }}
+      >
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => filterCategory(category)}
+            style={{
+              padding: "10px 18px",
+              border: "none",
+              borderRadius: "20px",
+              cursor: "pointer",
+              background:
+                selectedCategory === category
+                  ? "#4CAF50"
+                  : "#ddd",
+              color:
+                selectedCategory === category
+                  ? "white"
+                  : "black",
+            }}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+            {filteredProducts.length === 0 ? (
         <h2 style={{ textAlign: "center" }}>
           No Products Found
         </h2>
@@ -218,10 +246,12 @@ function Home() {
               >
                 {product.stock > 0
                   ? `Stock: ${product.stock}`
-                  : "Out of Stock"}
+                  : "Out Of Stock"}
               </p>
 
-              <div className="price">₹ {product.price}</div>
+              <div className="price">
+                ₹ {product.price}
+              </div>
 
               <button
                 onClick={() => addToCart(product._id)}
@@ -229,7 +259,9 @@ function Home() {
                 style={{
                   width: "100%",
                   background:
-                    product.stock > 0 ? "#2196F3" : "#888",
+                    product.stock > 0
+                      ? "#2196F3"
+                      : "#888",
                   color: "white",
                   border: "none",
                   padding: "12px",
