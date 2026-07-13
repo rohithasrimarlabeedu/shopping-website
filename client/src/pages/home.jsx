@@ -67,7 +67,7 @@ const [sort, setSort] = useState("default");
 
   setFilteredProducts(filtered);
 };
-const searchProducts = (value) => {
+const searchProducts = (value) => 
   setSearch(value);
 
   let filtered = [...products];
@@ -247,5 +247,5 @@ const searchProducts = (value) => {
        </div>
   );
 
-
+}
 export default Home;
