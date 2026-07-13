@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const API = "https://shopping-website-2ytp.onrender.com/api";
+
 function Orders() {
   const [orders, setOrders] = useState([]);
 
@@ -13,7 +15,7 @@ function Orders() {
       const token = localStorage.getItem("token");
 
       const { data } = await axios.get(
-        "http://localhost:5000/api/orders/myorders",
+        `${API}/orders/myorders`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -24,6 +26,7 @@ function Orders() {
       setOrders(data.orders);
     } catch (error) {
       console.log(error.response?.data || error.message);
+      alert(error.response?.data?.message || "Failed to load orders");
     }
   };
 
@@ -55,13 +58,15 @@ function Orders() {
 
             <h3>Products</h3>
 
-            {order.products.map((item) => (
-              <div key={item._id}>
-                <p>
-                  {item.product?.name} × {item.quantity}
-                </p>
-              </div>
-            ))}
+            {order.products
+              ?.filter((item) => item.product)
+              .map((item) => (
+                <div key={item._id}>
+                  <p>
+                    {item.product.name} × {item.quantity}
+                  </p>
+                </div>
+              ))}
           </div>
         ))
       )}
