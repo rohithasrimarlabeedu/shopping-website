@@ -142,6 +142,33 @@ function Home() {
   return (
     <div className="home">
       <h1>🛍 Shopping Store</h1>
+      <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    gap: "15px",
+    flexWrap: "wrap",
+    margin: "20px 0",
+  }}
+>
+  <button onClick={() => window.location.href="/login"}>Login</button>
+
+  <button onClick={() => window.location.href="/register"}>Register</button>
+
+  <button onClick={() => window.location.href="/cart"}>Cart</button>
+
+  <button onClick={() => window.location.href="/wishlist"}>Wishlist</button>
+
+  <button onClick={() => window.location.href="/orders"}>Orders</button>
+
+  <button onClick={() => window.location.href="/admin/add-product"}>
+    Add Product
+  </button>
+
+  <button onClick={() => window.location.href="/admin/manage-products"}>
+    Manage Products
+  </button>
+</div>
 
       <div
         style={{
