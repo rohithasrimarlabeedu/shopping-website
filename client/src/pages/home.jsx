@@ -147,18 +147,29 @@ function Home() {
       <h1>🛍 Shopping Store</h1>
       <div
   style={{
+   <div
+  style={{
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    background: "#1976d2",
-    padding: "15px 25px",
-    borderRadius: "10px",
-    marginBottom: "25px",
+    background: "#0f172a",
+    color: "white",
+    padding: "15px 30px",
+    borderRadius: "12px",
+    marginBottom: "30px",
     flexWrap: "wrap",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
   }}
 >
-  <h2 style={{ color: "white", margin: 0 }}>
-    Shopping Website
+  <h2
+    style={{
+      margin: 0,
+      cursor: "pointer",
+      color: "#38bdf8",
+    }}
+    onClick={() => navigate("/")}
+  >
+    🛍 Shopping Store
   </h2>
 
   <div
@@ -168,7 +179,7 @@ function Home() {
       flexWrap: "wrap",
     }}
   >
-    <button onClick={() => navigate("/")}>Home</button>
+    <button onClick={() => navigate("/")}>🏠 Home</button>
 
     <button onClick={() => navigate("/wishlist")}>
       ❤️ Wishlist
@@ -183,17 +194,19 @@ function Home() {
     </button>
 
     <button onClick={() => navigate("/login")}>
-      Login
+      🔑 Login
     </button>
 
     <button onClick={() => navigate("/register")}>
-      Register
+      👤 Register
     </button>
 
     <button
-      onClick={() => navigate("/admin/manage-products")}
+      onClick={() =>
+        navigate("/admin/manage-products")
+      }
     >
-      Admin
+      ⚙️ Admin
     </button>
   </div>
 </div>
