@@ -1,250 +1,90 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-const API = "https://shopping-website-2ytp.onrender.com/api";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Checkout() {
-  const [cart, setCart] = useState(null);
+  const navigate = useNavigate();
 
-  const [address, setAddress] = useState({
-    fullName: "",
-    mobile: "",
-    address: "",
-    city: "",
-    state: "",
-    pincode: "",
-  });
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [mobile, setMobile] = useState("");
 
-  const [paymentMethod, setPaymentMethod] = useState("COD");
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
-
-  const fetchCart = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const { data } = await axios.get(`${API}/cart`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setCart(data.cart);
-    } catch (error) {
-      console.log(error.response?.data || error.message);
+  const placeOrder = () => {
+    if (!address || !city || !mobile) {
+      alert("Please fill all fields");
+      return;
     }
+
+    alert("Order Placed Successfully 🎉");
+
+    navigate("/orders");
   };
-
-  const handleChange = (e) => {
-    setAddress({
-      ...address,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const placeOrder = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const { data } = await axios.post(
-        `${API}/orders`,
-        {
-          shippingAddress: address,
-          paymentMethod,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      alert(data.message || "Order Placed Successfully");
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Unable to place order"
-      );
-    }
-  };
-
-  if (!cart) {
-    return (
-      <div style={{ padding: 30 }}>
-        <h2>Loading...</h2>
-      </div>
-    );
-  }
-
-  let total = 0;
-
-  cart.products.forEach((item) => {
-    if (item.product) {
-      total += item.product.price * item.quantity;
-    }
-  });
 
   return (
     <div
       style={{
-        maxWidth: "1000px",
-        margin: "30px auto",
-        display: "grid",
-        gridTemplateColumns: "2fr 1fr",
-        gap: "30px",
+        maxWidth: "600px",
+        margin: "40px auto",
+        padding: "30px",
+        border: "1px solid #ddd",
+        borderRadius: "12px",
       }}
     >
-      <div>
-        <h1>Delivery Address</h1>
+      <h1>Checkout</h1>
 
-        <input
-          type="text"
-          name="fullName"
-          placeholder="Full Name"
-          value={address.fullName}
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <input
-          type="text"
-          name="mobile"
-          placeholder="Mobile Number"
-          value={address.mobile}
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <textarea
-          name="address"
-          placeholder="Address"
-          value={address.address}
-          onChange={handleChange}
-          style={{
-            ...inputStyle,
-            height: "100px",
-          }}
-        />
-
-        <input
-          type="text"
-          name="city"
-          placeholder="City"
-          value={address.city}
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <input
-          type="text"
-          name="state"
-          placeholder="State"
-          value={address.state}
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <input
-          type="text"
-          name="pincode"
-          placeholder="Pincode"
-          value={address.pincode}
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <h2>Payment Method</h2>
-
-        <label>
-          <input
-            type="radio"
-            value="COD"
-            checked={paymentMethod === "COD"}
-            onChange={(e) =>
-              setPaymentMethod(e.target.value)
-            }
-          />
-          Cash On Delivery
-        </label>
-
-        <br />
-
-        <label>
-          <input
-            type="radio"
-            value="ONLINE"
-            checked={paymentMethod === "ONLINE"}
-            onChange={(e) =>
-              setPaymentMethod(e.target.value)
-            }
-          />
-          Online Payment
-        </label>
-      </div>
-
-      <div
+      <input
+        type="text"
+        placeholder="Full Address"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
         style={{
-          border: "1px solid #ddd",
-          padding: "20px",
-          borderRadius: "10px",
+          width: "100%",
+          padding: "12px",
+          marginTop: "20px",
+        }}
+      />
+
+      <input
+        type="text"
+        placeholder="City"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "12px",
+          marginTop: "20px",
+        }}
+      />
+
+      <input
+        type="text"
+        placeholder="Mobile Number"
+        value={mobile}
+        onChange={(e) => setMobile(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "12px",
+          marginTop: "20px",
+        }}
+      />
+
+      <button
+        onClick={placeOrder}
+        style={{
+          width: "100%",
+          marginTop: "30px",
+          padding: "15px",
+          background: "#4CAF50",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          fontSize: "18px",
+          cursor: "pointer",
         }}
       >
-        <h2>Order Summary</h2>
-
-        {cart.products.map((item) =>
-          item.product ? (
-            <div
-              key={item._id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: "10px",
-              }}
-            >
-              <span>
-                {item.product.name} × {item.quantity}
-              </span>
-
-              <strong>
-                ₹ {item.product.price * item.quantity}
-              </strong>
-            </div>
-          ) : null
-        )}
-
-        <hr />
-
-        <h2>Total : ₹ {total}</h2>
-
-        <button
-          onClick={placeOrder}
-          style={{
-            width: "100%",
-            padding: "15px",
-            marginTop: "20px",
-            background: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontSize: "18px",
-          }}
-        >
-          Place Order
-        </button>
-      </div>
+        Place Order
+      </button>
     </div>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  padding: "12px",
-  marginBottom: "15px",
-  border: "1px solid #ccc",
-  borderRadius: "8px",
-};
 
 export default Checkout;
