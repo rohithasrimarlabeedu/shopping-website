@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Home.css";
 
@@ -12,6 +13,8 @@ function Home() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("default");
+  const navigate = useNavigate();
+  
 
   const categories = [
     "All",
@@ -142,6 +145,58 @@ function Home() {
   return (
     <div className="home">
       <h1>🛍 Shopping Store</h1>
+      <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    background: "#1976d2",
+    padding: "15px 25px",
+    borderRadius: "10px",
+    marginBottom: "25px",
+    flexWrap: "wrap",
+  }}
+>
+  <h2 style={{ color: "white", margin: 0 }}>
+    Shopping Website
+  </h2>
+
+  <div
+    style={{
+      display: "flex",
+      gap: "12px",
+      flexWrap: "wrap",
+    }}
+  >
+    <button onClick={() => navigate("/")}>Home</button>
+
+    <button onClick={() => navigate("/wishlist")}>
+      ❤️ Wishlist
+    </button>
+
+    <button onClick={() => navigate("/cart")}>
+      🛒 Cart
+    </button>
+
+    <button onClick={() => navigate("/orders")}>
+      📦 Orders
+    </button>
+
+    <button onClick={() => navigate("/login")}>
+      Login
+    </button>
+
+    <button onClick={() => navigate("/register")}>
+      Register
+    </button>
+
+    <button
+      onClick={() => navigate("/admin/manage-products")}
+    >
+      Admin
+    </button>
+  </div>
+</div>
       <div
   style={{
     display: "flex",
