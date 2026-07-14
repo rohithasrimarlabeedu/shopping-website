@@ -1,83 +1,52 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import Orders from "./pages/Orders";
-import Admin from "./pages/Admin";
+import Wishlist from "./pages/Wishlist";
+
 import AddProduct from "./pages/AddProduct";
 import ManageProducts from "./pages/ManageProducts";
 import EditProduct from "./pages/EditProduct";
-import ManageOrders from "./pages/ManageOrders";
 
 function App() {
   return (
     <BrowserRouter>
-      <div style={{ padding: "20px" }}>
-        <nav style={{ marginBottom: "20px" }}>
-          <Link to="/" style={{ marginRight: "20px" }}>
-            Home
-          </Link>
+      <Routes>
 
-          <Link to="/login" style={{ marginRight: "20px" }}>
-            Login
-          </Link>
+        {/* Customer */}
 
-          <Link to="/register" style={{ marginRight: "20px" }}>
-            Register
-          </Link>
+        <Route path="/" element={<Home />} />
 
-          <Link to="/cart" style={{ marginRight: "20px" }}>
-            Cart
-          </Link>
+        <Route path="/login" element={<Login />} />
 
-          <Link to="/orders" style={{ marginRight: "20px" }}>
-            Orders
-          </Link>
+        <Route path="/register" element={<Register />} />
 
-          <Link to="/admin">
-            Admin
-          </Link>
-        </nav>
+        <Route path="/cart" element={<Cart />} />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
+        <Route path="/wishlist" element={<Wishlist />} />
 
-          <Route path="/login" element={<Login />} />
 
-          <Route path="/register" element={<Register />} />
 
-          <Route path="/cart" element={<Cart />} />
+        {/* Admin */}
 
-          <Route path="/checkout" element={<Checkout />} />
+        <Route
+          path="/admin/add-product"
+          element={<AddProduct />}
+        />
 
-          <Route path="/orders" element={<Orders />} />
+        <Route
+          path="/admin/manage-products"
+          element={<ManageProducts />}
+        />
 
-          <Route path="/admin" element={<Admin />} />
+        <Route
+          path="/admin/edit-product/:id"
+          element={<EditProduct />}
+        />
 
-          <Route
-            path="/admin/add-product"
-            element={<AddProduct />}
-          />
-
-          <Route
-            path="/admin/products"
-            element={<ManageProducts />}
-          />
-
-          <Route
-            path="/admin/edit-product/:id"
-            element={<EditProduct />}
-          />
-
-          <Route
-            path="/admin/orders"
-            element={<ManageOrders />}
-          />
-        </Routes>
-      </div>
+      </Routes>
     </BrowserRouter>
   );
 }

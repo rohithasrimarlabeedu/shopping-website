@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
+const API = "https://shopping-website-2ytp.onrender.com/api";
+
 function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     fetchProduct();
@@ -14,11 +17,11 @@ function ProductDetails() {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get(
-        `http://localhost:5000/api/products/${id}`
-      );
+      const { data } = await axios.get(`${API}/products/${id}`);
 
-      setProduct(data.product);
+      if (data.success) {
+        setProduct(data.product);
+      }
     } catch (error) {
       console.log(error);
       alert("Failed to load product");
@@ -30,16 +33,16 @@ function ProductDetails() {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("Please login first");
+        alert("Please Login First");
         navigate("/login");
         return;
       }
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/cart/add",
+        `${API}/cart/add`,
         {
           productId: product._id,
-          quantity: 1,
+          quantity,
         },
         {
           headers: {
@@ -48,13 +51,11 @@ function ProductDetails() {
         }
       );
 
-      alert(data.message);
+      alert(data.message || "Added to Cart");
     } catch (error) {
-      console.log(error.response?.data || error.message);
-
       alert(
         error.response?.data?.message ||
-          "Failed to add product"
+          "Unable to add product"
       );
     }
   };
@@ -64,7 +65,7 @@ function ProductDetails() {
       <div
         style={{
           textAlign: "center",
-          marginTop: "100px",
+          marginTop: "120px",
         }}
       >
         <h2>Loading Product...</h2>
@@ -75,42 +76,41 @@ function ProductDetails() {
   return (
     <div
       style={{
-        maxWidth: "1100px",
+        maxWidth: "1200px",
         margin: "40px auto",
         display: "flex",
-        gap: "40px",
+        gap: "50px",
         flexWrap: "wrap",
+        padding: "20px",
       }}
     >
       <div style={{ flex: 1 }}>
         <img
           src={
             product.image ||
-            "https://picsum.photos/500"
+            "https://via.placeholder.com/500"
           }
           alt={product.name}
           style={{
             width: "100%",
             maxWidth: "500px",
-            borderRadius: "12px",
+            borderRadius: "15px",
+            boxShadow: "0 5px 15px rgba(0,0,0,.2)",
           }}
           onError={(e) => {
             e.target.src =
-              "https://picsum.photos/500";
+              "https://via.placeholder.com/500";
           }}
         />
       </div>
 
-      <div
-        style={{
-          flex: 1,
-        }}
-      >
+      <div style={{ flex: 1 }}>
         <h1>{product.name}</h1>
 
         <h2
           style={{
-            color: "green",
+            color: "#0a8f08",
+            marginTop: "15px",
           }}
         >
           ₹ {product.price}
@@ -118,51 +118,110 @@ function ProductDetails() {
 
         <p
           style={{
+            color: "#ffaa00",
+            fontSize: "18px",
+          }}
+        >
+          ⭐⭐⭐⭐☆ (4.5)
+        </p>
+
+        <p
+          style={{
+            lineHeight: "28px",
             marginTop: "20px",
-            lineHeight: "30px",
           }}
         >
           {product.description}
         </p>
 
         <p>
-          <strong>Category:</strong>{" "}
-          {product.category}
+          <strong>Category :</strong> {product.category}
         </p>
 
         <p>
-          <strong>Stock:</strong>{" "}
-          {product.stock}
+          <strong>Available :</strong>{" "}
+          <span
+            style={{
+              color:
+                product.stock > 0
+                  ? "green"
+                  : "red",
+              fontWeight: "bold",
+            }}
+          >
+            {product.stock > 0
+              ? `${product.stock} Items`
+              : "Out Of Stock"}
+          </span>
         </p>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "15px",
+            alignItems: "center",
+            marginTop: "25px",
+          }}
+        >
+          <button
+            onClick={() =>
+              quantity > 1 &&
+              setQuantity(quantity - 1)
+            }
+          >
+            -
+          </button>
+
+          <h3>{quantity}</h3>
+
+          <button
+            onClick={() =>
+              quantity < product.stock &&
+              setQuantity(quantity + 1)
+            }
+          >
+            +
+          </button>
+        </div>
 
         <button
           onClick={addToCart}
+          disabled={product.stock <= 0}
           style={{
-            marginTop: "30px",
-            padding: "15px 40px",
-            background: "green",
+            marginTop: "35px",
+            width: "220px",
+            padding: "15px",
+            background:
+              product.stock > 0
+                ? "#2196F3"
+                : "#888",
             color: "white",
             border: "none",
-            cursor: "pointer",
-            fontSize: "18px",
-            borderRadius: "8px",
+            borderRadius: "10px",
+            cursor:
+              product.stock > 0
+                ? "pointer"
+                : "not-allowed",
+            fontSize: "17px",
           }}
         >
           🛒 Add To Cart
         </button>
 
+        <br />
+
         <button
-          onClick={() => navigate("/cart")}
+          onClick={() => navigate("/checkout")}
           style={{
-            marginTop: "30px",
-            marginLeft: "20px",
-            padding: "15px 40px",
-            background: "#2196F3",
+            marginTop: "20px",
+            width: "220px",
+            padding: "15px",
+            background: "#0a8f08",
             color: "white",
             border: "none",
+            borderRadius: "10px",
             cursor: "pointer",
-            fontSize: "18px",
-            borderRadius: "8px",
+            fontSize: "17px",
           }}
         >
           Buy Now
@@ -173,13 +232,13 @@ function ProductDetails() {
         <button
           onClick={() => navigate(-1)}
           style={{
-            marginTop: "25px",
+            marginTop: "20px",
+            padding: "12px 30px",
             background: "#555",
             color: "white",
-            padding: "12px 30px",
             border: "none",
-            cursor: "pointer",
             borderRadius: "8px",
+            cursor: "pointer",
           }}
         >
           ← Back
